@@ -1,5 +1,5 @@
 """Morning AI digest agent: gathers today's AI news, a local model writes the brief."""
-import json, time, urllib.request, urllib.parse
+import json, os, time, urllib.request, urllib.parse
 
 MODEL = "qwen3:8b"
 
@@ -49,4 +49,6 @@ NEW AI REPOS ON GITHUB (this week):
 started = time.time()
 brief = ask_model(prompt)
 print(brief)
-print(f"\n---\n_Written by {MODEL}, running on a free GitHub Actions runner in {time.time() - started:.0f}s. No API key._")
+cpus = os.cpu_count()
+ram = round(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / 1e9)
+print(f"\n---\n🖥️ **Free GitHub runner:** {cpus} CPUs · {ram} GB RAM  \n🤖 **Written by** {MODEL}, running on that machine in {time.time() - started:.0f}s  \n🔑 **API key:** none · 💸 **Bill:** $0")
