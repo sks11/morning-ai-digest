@@ -18,8 +18,9 @@ jobs:
       - name: Show the free machine
         run: |
           echo "CPUs: $(nproc)"
-          free --si -h | awk '/Mem:/ {print "RAM:  " $2}'
-          echo "### Free runner: $(nproc) CPUs · $(free --si -h | awk '/Mem:/ {print $2}') RAM" >> "$GITHUB_STEP_SUMMARY"
+          RAM=$(awk '/MemTotal/ {printf "%.0f GB", $2/1048576}' /proc/meminfo)
+          echo "RAM:  $RAM"
+          echo "### Free runner: $(nproc) CPUs · $RAM RAM" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Start a local AI model (no API key)
         run: |
