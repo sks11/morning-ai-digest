@@ -1,0 +1,35 @@
+name: Morning AI Digest
+
+on:
+  schedule:
+    - cron: "0 12 * * *"   # every day, 12:00 UTC (8 AM New York)
+  workflow_dispatch:        # plus a "Run workflow" button
+
+permissions:
+  issues: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest   # free on public repos: 4 CPUs, 16 GB RAM
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show the free machine
+        run: |
+          echo "CPUs: $(nproc)"
+          free -h | awk '/Mem:/ {print "RAM:  " $2}'
+
+      - name: Start a local AI model (no API key)
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          (ollama serve > /tmp/ollama.log 2>&1 &)
+          sleep 5
+          ollama pull qwen3:8b
+
+      - name: AI agent reads the news and writes your digest
+        run: python3 agent.py > digest.md
+
+      - name: Deliver it (GitHub emails you every new issue)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "☀️ Your AI digest — $(date -u +'%a %b %d')" --body-file digest.md
