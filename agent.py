@@ -36,7 +36,7 @@ def ask_model(prompt):
 news, repos = hacker_news(), new_github_repos()
 prompt = f"""You write a short morning AI briefing for a busy builder.
 From the items below, pick the 5 that matter most today.
-For each: a bold one-line headline, one plain-English sentence on why it matters, and the link.
+For each: a bold one-line headline, one plain-English sentence on why it matters (only say what the title tells you; never guess), and the link.
 Then end with one line: "Try today:" plus one repo worth opening.
 Markdown only. No intro.
 
